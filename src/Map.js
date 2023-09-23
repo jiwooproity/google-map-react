@@ -5,6 +5,7 @@ import {
   MarkerF,
   CircleF,
   HeatmapLayerF,
+  PolylineF,
 } from "@react-google-maps/api";
 
 const mapStyles = {
@@ -55,19 +56,30 @@ const Map = ({ data, zoom, center }) => {
             />
           </>
         ))}
+        <PolylineF
+          path={data.map((item) => ({
+            lat: Number(item && item.location.lat, 10),
+            lng: Number(item && item.location.lng, 10),
+          }))}
+          options={{
+            strokeColor: "#07966B",
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            icons: [
+              {
+                icon: "hello",
+                offset: "0",
+                repeat: "10px",
+              },
+            ],
+          }}
+        />
         <CircleF
           center={center}
           radius={2000}
           options={{ strokeColor: "red", fillOpacity: 0.1 }}
         />
-        {loading && (
-          <HeatmapLayerF
-            options={{
-              radius: 50,
-            }}
-            data={heatMapData}
-          />
-        )}
+        {loading && <HeatmapLayerF options={{}} data={heatMapData} />}
       </GoogleMap>
     </LoadScript>
   );
