@@ -6,6 +6,7 @@ import {
   CircleF,
   HeatmapLayerF,
   PolylineF,
+  InfoWindowF,
 } from "@react-google-maps/api";
 
 const mapStyles = {
@@ -16,6 +17,28 @@ const mapStyles = {
 const Map = ({ data, zoom, center }) => {
   const [heatMapData, setHeatMapData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [infoData, setInfoData] = useState({
+    showingInfoWindow: false,
+    activeMarker: {},
+    selectedPlace: {},
+  });
+
+  const onMarkerClick = (props, marker, e) => {
+    setInfoData({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true,
+    });
+  };
+
+  const onClose = (props) => {
+    if (infoData.showingInfoWindow) {
+      setInfoData({
+        showingInfoWindow: false,
+        activeMarker: null,
+      });
+    }
+  };
 
   useEffect(() => {
     if (window.google) {
@@ -56,6 +79,11 @@ const Map = ({ data, zoom, center }) => {
             />
           </>
         ))}
+        <InfoWindowF
+          marker={infoData.activeMarker}
+          visible={infoData.showingInfoWindow}
+          onClose={onClose}
+        />
         <PolylineF
           path={data.map((item) => ({
             lat: Number(item && item.location.lat, 10),
