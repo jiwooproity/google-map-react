@@ -17,27 +17,14 @@ const mapStyles = {
 const Map = ({ data, zoom, center }) => {
   const [heatMapData, setHeatMapData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [infoData, setInfoData] = useState({
-    showingInfoWindow: false,
-    activeMarker: {},
-    selectedPlace: {},
-  });
 
-  const onMarkerClick = (props, marker, e) => {
-    setInfoData({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true,
-    });
-  };
+  const [activeMarker, setActiveMarker] = useState(null);
 
-  const onClose = (props) => {
-    if (infoData.showingInfoWindow) {
-      setInfoData({
-        showingInfoWindow: false,
-        activeMarker: null,
-      });
+  const handleActiveMarker = (marker) => {
+    if (marker === activeMarker) {
+      return;
     }
+    setActiveMarker(marker);
   };
 
   useEffect(() => {
@@ -76,14 +63,16 @@ const Map = ({ data, zoom, center }) => {
               key={item.name}
               position={item.location}
               title={item.name}
-            />
+              onClick={() => handleActiveMarker(item.name)}
+            >
+              {activeMarker === item.name ? (
+                <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
+                  <div>{item.name}</div>
+                </InfoWindowF>
+              ) : null}
+            </MarkerF>
           </>
         ))}
-        <InfoWindowF
-          marker={infoData.activeMarker}
-          visible={infoData.showingInfoWindow}
-          onClose={onClose}
-        />
         <PolylineF
           path={data.map((item) => ({
             lat: Number(item && item.location.lat, 10),
