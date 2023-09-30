@@ -73,6 +73,18 @@ const Map = ({ data, zoom, center }) => {
             </MarkerF>
           </>
         ))}
+        <MarkerF
+          key="start"
+          position={center}
+          label={{ text: `START`, color: "black" }}
+          icon="http://maps.google.com/mapfiles/kml/shapes/arrow.png"
+        >
+          {activeMarker === "start" ? (
+            <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
+              <div>Start</div>
+            </InfoWindowF>
+          ) : null}
+        </MarkerF>
         <PolylineF
           path={data.map((item) => ({
             lat: Number(item && item.location.lat, 10),
